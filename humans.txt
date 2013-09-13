@@ -1,0 +1,11 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Stuart Branham -- Owner -- @glompix
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    jQuery
