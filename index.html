@@ -7,39 +7,46 @@
         <meta name="description" content="Just a cool web site for cool people. Come chill out or just relax.">
         <meta name="viewport" content="width=device-width">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/main.css">
         <style>
           body {
             padding-top: 50px;
             padding-bottom: 20px;
 		    background: -webkit-canvas(MainCanvas);
+		    color: #fafafa;
           }
 
 		  .project-list {
 		    list-style: none;
 		    padding: 0; margin: 0;
 		  }
+
+		  .well {
+		    opacity: 0.95;
+		    background-image: linear-gradient(to bottom, #444 0, #333 100%);
+		  }
         </style>
-        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="css/main.css">
 
         <!--[if lt IE 9]>
             <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
     </head>
     <body>
-	  <canvas id="Background" data-processing-sources="main.pde" width=window.innerWidth height=window.innerHeight style="position:fixed; left:0; top:0;"></canvas>
+	  <canvas id="Background" data-processing-sources="visual-keyboard.pde" width=window.innerWidth height=window.innerHeight style="position:fixed; left:0; top:0;"></canvas>
 	  <div class="container">
 		<div class="row">
 		  <div class="col-md-offset-6 col-md-6 well">
 			<h1>Stuart Branham <small>@glompix</small></h1>
-			<img src="https://1.gravatar.com/avatar/4f805ebcde59be430266ba3868fc5f3b?d=mm&s=180" alt="gravatar" class="img-rounded pull-right" />
+			<img src="https://1.gravatar.com/avatar/4f805ebcde59be430266ba3868fc5f3b?d=mm&s=180" alt="gravatar" class="img-rounded pull-right" style="margin-left: 20px;" />
 			<p class="bio">
 			  Hi! I'm a software developer in Lexington, KY. I'm into web development, software architecture,
-			  and am a typical A/V nerd. I'm also into music - especially prog rock, shoegaze, psychedelic, and
-			  noisy music in general.
+			  and am kind of an A/V nerd. I'm also into music - especially prog rock, shoegaze, and noisy 
+			  music in general.
 			</p>
 			<p class="twitter-user">Twitter <a href="http://twitter.com/glompix">@glompix</a></p>
 			<p class="github-user">GitHub <a href="http://github.com/glompix">glompix</a></p>
+			<div class="clearfix"></div>
 		  </div>
 		</div>
 		<div class="row">
