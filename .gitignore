@@ -7,6 +7,19 @@ lib-cov
 *.pid
 *.gz
 
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+.org-id-locations
+*_archive
+
 pids
 logs
 results
