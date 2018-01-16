@@ -1,3 +1,5 @@
+// * ~ * f l o r a l s h o p p e * ~ *
+
 var container;
 
 var lights = {};
@@ -9,6 +11,8 @@ var clock, time, delta;
 
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
+
+var colorPink = 0xF1889D;
 
 init();
 animate();
@@ -34,7 +38,7 @@ function init() {
   camera.add(lights.point);
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xF1889D);
+  scene.background = new THREE.Color(colorPink);
   scene.add(lights.ambient);
   scene.add(camera);
 
@@ -47,7 +51,7 @@ function init() {
   };
 
   var loader = new THREE.OBJLoader(manager);
-  loader.load('assets/helios.obj', loadedHelios, onLoading, console.error);
+  loader.load('sketch/floral-shoppe/helios.obj', loadedHelios, onLoading, console.error);
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
