@@ -94,8 +94,8 @@ function addGridFloor() {
     color: 0x111111,
     side: THREE.DoubleSide
   });
-  for (var y = 0; y < 30; y++) {
-    for (var x = -10; x < 20; x++) {
+  for (var y = 0; y < 20; y++) {
+    for (var x = -3; x < 10; x++) {
       var xodd = x % 2;
       var yodd = y % 2;
       if (yodd && !xodd || !yodd && xodd) continue;
