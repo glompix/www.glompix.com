@@ -1,109 +1,130 @@
-// * ~ * f l o r a l s h o p p e * ~ *
-
+// * ~ * f l o r a l s h o p p e * ~ * scene
 var container;
-
 var lights = {};
-var camera, scene, renderer;
+var camera,
+  scene,
+  renderer,
+  controls;
+var clock,
+  time,
+  delta;
 
+// objects
 var helios;
 
-var clock, time, delta;
-
-var windowHalfX = window.innerWidth / 2;
-var windowHalfY = window.innerHeight / 2;
-
+// etc
 var colorPink = 0xF1889D;
+var colorGreen = 0x92FABE;
 
+// run loop
 init();
 animate();
 
-function onLoading(xhr) {
-  if (xhr.lengthComputable) {
-    var percentComplete = xhr.loaded / xhr.total * 100;
-    console.log(Math.round(percentComplete, 2) + '% downloaded');
-  }
+function init() {
+  setupEnvironment();
+  loadAssets();
+  addGridFloor();
 }
 
-function init() {
+function setupEnvironment() {
   clock = new THREE.Clock();
 
   container = document.getElementById('Background');
+  lights.ambient = new THREE.AmbientLight(0xffffff, 0.25);
+  lights.point = new THREE.SpotLight(0xffffff);
+  lights.point.castShadow = true;
+  lights.point.shadow.camera.near = 0.5;
 
-  lights.ambient = new THREE.AmbientLight(0x999999, 0.3);
-  lights.point = new THREE.PointLight(0xffffff, 0.8);
+  lights.point.position.x = -2;
+  lights.point.position.y = 5;
+  lights.point.position.z = 2;
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
-  camera.position.x = 0;
+  // controls = new THREE.OrbitControls(camera);
   camera.position.z = 8;
-  camera.add(lights.point);
+  // controls.update();
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(colorPink);
   scene.add(lights.ambient);
+  scene.add(lights.point);
   scene.add(camera);
 
-  // addAxisLines();
-  addGridFloor();
+  // var helper = new THREE.CameraHelper(lights.point.shadow.camera); scene.add(helper);
 
-  var manager = new THREE.LoadingManager();
-  manager.onProgress = function(item, loaded, total) {
-    console.log(item, loaded, total);
-  };
+  function onWindowResize() {
+    windowHalfX = window.innerWidth / 2;
+    windowHalfY = window.innerHeight / 2;
 
-  var loader = new THREE.OBJLoader(manager);
-  loader.load('sketch/floral-shoppe/helios.obj', loadedHelios, onLoading, console.error);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  window.addEventListener('resize', onWindowResize, false);
 
   renderer = new THREE.WebGLRenderer();
+  renderer.shadowMap.enabled = true;
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
-
-  window.addEventListener('resize', onWindowResize, false);
 }
 
-function onWindowResize() {
-  windowHalfX = window.innerWidth / 2;
-  windowHalfY = window.innerHeight / 2;
+function loadAssets() {
+  var manager = new THREE.LoadingManager();
+  manager.onProgress = console.log;
 
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  var loader = new THREE.OBJLoader(manager);
+  loader.load('/sketch/floral-shoppe/helios.obj', loadedHelios, console.log, console.error);
 }
 
-function animate() {
-  requestAnimationFrame(animate);
-  render();
-}
+function loadedHelios(mesh) {
+  var material = new THREE.MeshStandardMaterial({color: 0xffffff});
+  mesh.traverse(function(child) {
+    if (child instanceof THREE.Mesh) {
+      child.material = material;
+      child.castShadow = true;
+    }
+  });
 
-function updateTime() {
-  time = clock.getElapsedTime();
-  delta = clock.getDelta();
-}
+  // mesh bounding box (centering)
+  var box = new THREE.Box3().setFromObject(mesh);
+  box.getCenter(mesh.position);
+  mesh.position.multiplyScalar(-1);
 
-function render() {
-  updateTime();
-  updateHelios();
+  helios = new THREE.Group();
+  helios.add(mesh);
+  helios.scale.multiplyScalar(0.9);
 
-  camera.lookAt(scene.position);
-  renderer.render(scene, camera);
+  var geometry = new THREE.BoxGeometry(1, 1, 1);
+  var cube = new THREE.Mesh(geometry, material);
+  cube.receiveShadow = true;
+
+  cube.scale.x = 3;
+  cube.scale.y = 0.3;
+  cube.scale.z = 3;
+  cube.position.y = -2.5;
+
+  heliosWithStand = new THREE.Group();
+  heliosWithStand.add(helios);
+  heliosWithStand.add(cube);
+  heliosWithStand.position.x = 1.5;
+  heliosWithStand.position.z = -1.5;
+  scene.add(heliosWithStand);
 }
 
 function addGridFloor() {
-  var mat = new THREE.MeshBasicMaterial({
-    color: 0x111111,
-    side: THREE.DoubleSide
-  });
-  for (var y = 0; y < 20; y++) {
-    for (var x = -3; x < 10; x++) {
+  var mat = new THREE.MeshBasicMaterial({color: 0x111111, side: THREE.DoubleSide});
+  for (var y = -1; y < 20; y++) {
+    for (var x = -50; x < 50; x++) {
       var xodd = x % 2;
       var yodd = y % 2;
-      if (yodd && !xodd || !yodd && xodd) continue;
+      if (yodd && !xodd || !yodd && xodd) 
+        continue;
       scene.add(gridSquare(x, y, mat));
     }
   }
 }
-
 
 function gridSquare(x, y, mat) {
   var geometry = new THREE.PlaneGeometry();
@@ -115,27 +136,36 @@ function gridSquare(x, y, mat) {
   return plane;
 }
 
-var pivot;
+function updateTime() {
+  time = clock.getElapsedTime();
+  delta = clock.getDelta();
+}
 
-function loadedHelios(mesh) {
-  scene.add(mesh);
-  helios = mesh;
+function animate() {
+  requestAnimationFrame(animate);
+  // controls.update();
+  updateTime();
+  render();
+}
 
-  // centering
-  var box = new THREE.Box3().setFromObject(mesh);
-  box.getCenter(mesh.position);
-  mesh.position.multiplyScalar(-1);
+function render() {
+  updateHelios();
+  updateLights();
 
-  pivot = new THREE.Group();
-  pivot.position.x = 1.8;
-  scene.add(pivot);
-  pivot.add(mesh);
+  camera.lookAt(scene.position);
+  renderer.render(scene, camera);
 }
 
 function updateHelios() {
   if (!helios) {
     return;
   }
-  pivot.position.y = Math.sin(time * 2) * 0.25;
-  pivot.rotation.y += delta * 5000;
+  helios.position.y = 0.25 + Math.sin(time * 2) * 0.25;
+  helios.rotation.y = -time;
+}
+
+function updateLights() {
+  if (!lights || !lights.point) {
+    return;
+  }
 }
