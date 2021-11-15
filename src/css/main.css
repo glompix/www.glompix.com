@@ -1,0 +1,20 @@
+body {
+  font-family: 'Comic Sans MS';
+  background: #eee;
+  color: #111;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #111 linear-gradient(0deg, rgba(17, 17, 17, 1) 0%, rgba(42, 42, 42, 1) 100%) no-repeat;
+    color: #eee;
+  }
+}
+
+.rainbow-text {
+  background-image: repeating-linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+  background-size: 60%;
+  background-position: center center;
+  background-clip: text;
+  color: transparent;
+}
