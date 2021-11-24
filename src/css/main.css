@@ -11,10 +11,27 @@ body {
   }
 }
 
+.text-center {
+  text-align: center;
+}
+
 .rainbow-text {
   background-image: repeating-linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
-  background-size: 60%;
+  background-size: 100%;
   background-position: center center;
   background-clip: text;
   color: transparent;
+  animation: rainbow_scroll 5s linear;
+}
+
+@keyframes rainbow_scroll {
+  0% {
+    background-position: 0% 0;
+  }
+  50% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
 }
